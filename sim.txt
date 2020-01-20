@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Click Mobile Simulator</title>
+        <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet "/>
+    </head>
+    <body>
+        <div class="monitor">
+            <div>Total Coin(s): <span id="totalCoins" style="color: blue">null</span></div>
+            <div>Coin(s) per click: <span id="coinsPerClick" style="color: blue">null</span></div>
+        </div>
+        <div class="upgrade" id="upgrade">UPGRADE</div>
+        <div class="shop" id="shop">
+            <div class="option opt1">Auto Clicker</div>
+            <div class="option opt2" style="font-size: 30px">Upgrade CPC<br>( coins per click )</div>
+            <div class="option opt3">Perks</div>
+            <div class="option opt3">Bet</div>
+        <input class="close" id="close" type="button" value="CLOSE" /></div>
+        
+        <div class="shop autoclicker" id="autoclicker">
+            <input class="option" id="upgradecpc" type="button" value="UPGRADE" style="width:80%"/>
+            <div class="cpcdetails">
+            <p>Level <span id="cpclevel"">null</span></p>
+            <p>Cost: <span id="cpccost">null</span> coins</p>
+            <p>Click per second: <span id="cps">null</span> click(s)</p></div>
+        <input class="close" id="back" type="button" value="BACK" />
+        </div>
+        
+        <div class="shop cpcupgrade" id="cpcupgrade">
+            <input class="option" id="upgradecpc2" type="button" value="UPGRADE" style="width:80%"/>
+            <div class="cpcdetails">
+            <p>Level <span id="cpc2level"">null</span></p>
+            <p>Cost: <span id="cpc2cost">null</span> coins</p>
+            <p>Coins per click: <span id="cpc">null</span> click(s)</p></div>
+        <input class="close" id="back2" type="button" value="BACK" />
+        </div>
+    
+    <div class="shop perks" id="perks">
+        
+        <input class="close" id="back3" type="button" value="BACK" />
+    </div>
+    </body>
+    <link rel="stylesheet" href="sim.css">
+    <script>
+    window.onload = function(){
+    var totalCoins, coinsPerClick, index, coins, cpp, upgradeCost = [],cppLevel,cppCost,numOfClicks,cpc2level, cpc2cost
+    
+    init()
+    
+    function init(){
+        upgradeCost = [ 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 300000, 500000, 1000000, 5000000, 10000000, 10000000, 100000000 ]
+        
+        
+        totalCoins = 0
+        cppLevel = 0
+        coinsPerClick = 1
+        index = 0
+        cppCost = 1000000
+        numOfClicks = 0
+        cpc2cost = upgradeCost[index]
+        cpc2level = 0
+        coins = document.getElementById("totalCoins")
+        cpp = document.getElementById("coinsPerClick")
+        
+        coins.innerText = totalCoins
+        cpp.innerText = coinsPerClick
+        document.getElementById("cpclevel").innerText = cppLevel
+        document.getElementById("cpccost").innerText = cppCost
+        document.getElementById("cps").innerText = numOfClicks
+        document.getElementById("cpc2level").innerText = cpc2level
+        document.getElementById("cpc2cost").innerText = cpc2cost
+        document.getElementById("cpc").innerText = coinsPerClick
+        
+    }
+    
+    setInterval(function(){
+       if ( numOfClicks > 0 ){ 
+           var x = Math.floor(Math.random()*screen.width)
+           var y = Math.floor(Math.random()*screen.height)
+           click(x,y)
+       }
+    },1000/numOfClicks)
+    document.querySelector("body").addEventListener("click",function(e){
+        click(e.pageX,e.pageY)
+    })
+    
+    document.getElementById("upgrade").addEventListener("click",function (){
+        var shop = document.getElementById("shop")
+        
+        if ( getComputedStyle(shop).display == "none"){
+            shop.style.animation = "appear 1s linear"
+            shop.style.display = "block"
+        } else {
+            shop.style.animation = "disappear 1s linear"
+            setTimeout(function(){
+            shop.style.display = "none"
+        },1000)
+       }
+        
+    })
+document.getElementById("close").addEventListener("click",function(){
+        var shop = document.getElementById("shop")
+        shop.style.animation = "disappear 1s linear"
+        setTimeout(function(){
+            shop.style.display = "none"
+        },1000)
+})
+
+document.getElementsByClassName("option")[0].addEventListener("click",function(){
+document.getElementById("shop").style.display = "none" 
+document.getElementById("autoclicker").style.display = "block"
+})
+
+document.getElementsByClassName("option")[1].addEventListener("click",function(){
+document.getElementById("shop").style.display = "none" 
+document.getElementById("cpcupgrade").style.display = "block"
+})
+
+document.getElementsByClassName("option")[2].addEventListener("click",function(){
+document.getElementById("shop").style.display = "none" 
+document.getElementById("perks").style.display = "block"
+})
+
+
+
+document.getElementById("back").addEventListener("click",function(){
+document.getElementById("autoclicker").style.display = "none"
+
+    document.getElementById("shop").style.display = "block"
+})
+
+document.getElementById("back2").addEventListener("click",function(){
+document.getElementById("cpcupgrade").style.display = "none"
+document.getElementById("shop").style.display = "block"
+})
+
+document.getElementById("back3").addEventListener("click",function(){
+document.getElementById("perks").style.display = "none"
+document.getElementById("shop").style.display = "block"
+})
+
+//upgrade opt1
+document.getElementById("upgradecpc").addEventListener("click",function(){
+    if ( totalCoins >= cppCost ){
+        totalCoins -= cppCost
+        cppCost += 1000000
+        cppLevel++
+        numOfClicks++
+        document.getElementById("cpclevel").innerText = cppLevel
+        document.getElementById("cpccost").innerText = cppCost
+        document.getElementById("cps").innerText = numOfClicks
+    } else {
+        var p = document.createElement("p")
+        var body = document.querySelector("body")
+        p.innerText = "Coins not enough"
+        p.style.animation = "fade 1s linear"
+        p.setAttribute("class","warning")
+        body.appendChild(p)
+        
+        setTimeout(function(){
+            body.removeChild(p)
+        },2000)
+    }
+})
+//upgrade opt2
+document.getElementById("upgradecpc2").addEventListener("click",function(){
+    if ( totalCoins >= cpc2cost ){
+        totalCoins -= cpc2cost
+        coinsPerClick = upgradeCost[index]/50
+        cpc2level++
+        
+        index++
+        cpc2cost = upgradeCost[index]
+        
+        document.getElementById("cpc2level").innerText = cpc2level
+        document.getElementById("cpc2cost").innerText = cpc2cost
+        document.getElementById("cpc").innerText = coinsPerClick
+    } else {
+        var p = document.createElement("p")
+        var body = document.querySelector("body")
+        p.innerText = "Coins not enough"
+        p.style.animation = "fade 1s linear"
+        body.appendChild(p)
+        
+        p.setAttribute("class","warning")
+        
+        setTimeout(function(){
+            body.removeChild(p)
+        },2000)
+    }
+})
+
+    function click(x,y){
+        var temp = document.createElement("p")
+        var body = document.querySelector("body")
+        
+        temp.setAttribute("class","coins")
+        temp.style.marginTop = (y-60)+"px"
+        temp.style.marginLeft = x+"px"
+        temp.innerText = "+" + coinsPerClick
+        
+        totalCoins+=coinsPerClick
+        coins.innerText = totalCoins
+        body.appendChild(temp)
+        
+        setTimeout(function(){
+            body.removeChild(temp)    
+        },1000)
+    }
+}
+
+
+
+
+
+    </script> 
+</html>
